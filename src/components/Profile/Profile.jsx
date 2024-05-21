@@ -7,7 +7,7 @@ const Profile = () => {
   const { currentUser } = useAuth();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     console.log("Current User:", currentUser);
@@ -19,13 +19,16 @@ const Profile = () => {
           setLoading(false);
         })
         .catch((err) => {
-          setError(
-            "Error fetching profile: " +
-              (err.response?.data?.message || err.message)
-          );
+          const errorMessage =
+            err.response?.data?.message ||
+            err.message ||
+            "Error fetching profile";
+          console.error("Error fetching profile:", errorMessage);
+          setError(errorMessage);
           setLoading(false);
         });
     } else {
+      console.log("No current user detected.");
       setError("No current user detected.");
       setLoading(false);
     }
