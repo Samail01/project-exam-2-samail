@@ -40,7 +40,7 @@ export function Nav() {
   };
 
   return (
-    <nav className="flex justify-between items-center w-full bg-primary text-white h-[70px] relative">
+    <nav className="flex justify-between items-center w-full bg-primary text-white h-[80px] relative">
       <h1 className="text-3xl font-bold font-[Odor-Mean-Chey] px-4">
         <Link to="/">Holidaze</Link>
       </h1>

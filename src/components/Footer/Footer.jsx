@@ -63,32 +63,3 @@ export function Footer() {
     </footer>
   );
 }
-
-/* 
-<footer className="">
-      <div>
-        <div>
-          <div>
-            <h4>Holidaze</h4>
-            <p>
-              Holidaze is your go-to platform for discovering and booking unique
-              accomodations
-            </p>
-            <div>
-              <a href="">
-                <FaFacebookF />
-              </a>
-              <a href="">
-                <FaInstagram />
-              </a>
-              <a href="">
-                <FaTwitter />
-              </a>
-              <a href="">
-                <FaLinkedinIn />
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </footer> */
