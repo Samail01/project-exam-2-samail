@@ -37,7 +37,7 @@ const Profile = () => {
     }
     try {
       setUpdating(true);
-      const response = await axios.put(
+      await axios.put(
         `${API_BASE_URL}/holidaze/profiles/${currentUser.name}`,
         { avatar: { url: newAvatarUrl, alt: "User Avatar" } },
         {
@@ -75,7 +75,7 @@ const Profile = () => {
         },
       });
       alert("Venue deleted successfully!");
-      window.location.reload(); // Consider updating the state instead of reloading
+      window.location.reload();
     } catch (error) {
       alert(
         `Failed to delete venue: ${

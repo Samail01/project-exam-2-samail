@@ -13,6 +13,8 @@ const useProfile = (userName) => {
 
   useEffect(() => {
     const fetchProfileData = async () => {
+      if (!userName) return;
+
       setLoading(true);
       try {
         const headers = {
@@ -49,7 +51,6 @@ const useProfile = (userName) => {
   }, [userName]);
 
   return { profile, bookings, venues, loading, error };
-  s;
 };
 
 export default useProfile;

@@ -8,7 +8,7 @@ export const useAuth = () => useContext(AuthContext);
 const API_URL = "https://v2.api.noroff.dev";
 const LOGIN_URL = `${API_URL}/auth/login`;
 const PROFILE_URL = (userName) => `${API_URL}/holidaze/profiles/${userName}`;
-const API_KEY = "bd4873af-e59d-48b6-996a-63a300dadda8"; // Hardcoded API key
+const API_KEY = "bd4873af-e59d-48b6-996a-63a300dadda8";
 
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);

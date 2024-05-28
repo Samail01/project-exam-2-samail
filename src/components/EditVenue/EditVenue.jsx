@@ -8,8 +8,8 @@ function EditVenue({ isOpen, onClose, venueData, onVenueUpdated }) {
   const [venue, setVenue] = useState({
     name: "",
     description: "",
-    price: "",
-    maxGuests: "",
+    price: 0,
+    maxGuests: 0,
     address: "",
     city: "",
     imageUrl: "",
@@ -38,47 +38,32 @@ function EditVenue({ isOpen, onClose, venueData, onVenueUpdated }) {
     e.preventDefault();
     try {
       const API_BASE_URL = "https://v2.api.noroff.dev/holidaze/venues";
-      const API_KEY = localStorage.getItem("API_KEY");
       const TOKEN = localStorage.getItem("token");
 
-      if (!TOKEN) {
-        alert("You are not authorized or your session has expired.");
-        return;
-      }
-
-      console.log("Token:", TOKEN);
-      console.log("API Key:", API_KEY);
-
-      const headers = {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-        "X-Noroff-API-Key": API_KEY,
-        "Content-Type": "application/json",
-      };
-
-      const response = await axios.put(
+      await axios.put(
         `${API_BASE_URL}/${venueData.id}`,
         {
           name: venue.name,
           description: venue.description,
-          price: venue.price,
-          maxGuests: venue.maxGuests,
+          price: Number(venue.price),
+          maxGuests: Number(venue.maxGuests),
           media: [{ url: venue.imageUrl, alt: "Venue image" }],
           location: { address: venue.address, city: venue.city },
         },
-        { headers }
+        {
+          headers: {
+            Authorization: `Bearer ${TOKEN}`,
+            "X-Noroff-API-Key": "bd4873af-e59d-48b6-996a-63a300dadda8",
+            "Content-Type": "application/json",
+          },
+        }
       );
-
-      console.log("Update response:", response.data);
 
       onVenueUpdated();
       onClose();
     } catch (error) {
-      console.error("Failed to update venue:", error);
-      alert(
-        `Failed to update venue: ${
-          error.response?.data?.message || error.message
-        }`
-      );
+      console.error(`Failed to update venue: ${error}`);
+      alert(`Failed to update venue: ${error.message}`);
     }
   };
 
