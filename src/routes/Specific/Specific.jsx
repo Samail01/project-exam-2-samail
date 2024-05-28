@@ -25,34 +25,35 @@ const Specific = () => {
         setVenue(data);
 
         const token = localStorage.getItem("token");
-        if (!token) {
-          throw new Error("User not authenticated");
-        }
+        if (token) {
+          try {
+            const bookingsResponse = await axios.get(
+              `https://v2.api.noroff.dev/holidaze/venues/${id}/bookings`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  "X-Noroff-API-Key": "bd4873af-e59d-48b6-996a-63a300dadda8",
+                  "Content-Type": "application/json",
+                },
+              }
+            );
 
-        try {
-          const bookingsResponse = await axios.get(
-            `https://v2.api.noroff.dev/holidaze/profiles/${id}/venues`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "X-Noroff-API-Key": "bd4873af-e59d-48b6-996a-63a300dadda8",
-                "Content-Type": "application/json",
-              },
+            const bookings = bookingsResponse.data.data;
+            const disabledDates = bookings.map((booking) => ({
+              from: new Date(booking.dateFrom),
+              to: new Date(booking.dateTo),
+            }));
+
+            setDisabledDays(disabledDates);
+          } catch (bookingsError) {
+            if (
+              bookingsError.response &&
+              bookingsError.response.status === 404
+            ) {
+              console.warn("No bookings found for this venue.");
+            } else {
+              throw bookingsError;
             }
-          );
-
-          const bookings = bookingsResponse.data.data;
-          const disabledDates = bookings.map((booking) => ({
-            from: new Date(booking.dateFrom),
-            to: new Date(booking.dateTo),
-          }));
-
-          setDisabledDays(disabledDates);
-        } catch (bookingsError) {
-          if (bookingsError.response && bookingsError.response.status === 404) {
-            console.warn("No bookings found for this venue.");
-          } else {
-            throw bookingsError;
           }
         }
       } catch (error) {
