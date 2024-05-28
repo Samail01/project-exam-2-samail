@@ -24,12 +24,17 @@ const Specific = () => {
         const data = await fetchVenueDetails(id);
         setVenue(data);
 
+        const token = localStorage.getItem("token");
+        if (!token) {
+          throw new Error("User not authenticated");
+        }
+
         try {
           const bookingsResponse = await axios.get(
             `https://v2.api.noroff.dev/holidaze/profiles/${id}/venues`,
             {
               headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                Authorization: `Bearer ${token}`,
                 "X-Noroff-API-Key": "bd4873af-e59d-48b6-996a-63a300dadda8",
                 "Content-Type": "application/json",
               },
