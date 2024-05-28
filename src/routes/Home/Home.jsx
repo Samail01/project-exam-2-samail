@@ -111,7 +111,10 @@ export function Home() {
                     }
                   />
                   <div className="px-6 py-4">
-                    <div className="font-bold text-xl mb-2">{venue.name}</div>
+                    <div className="font-bold text-xl mb-1">{venue.name}</div>
+                    <p className="text-gray-600">
+                      {venue.location.city}, {venue.location.country}
+                    </p>
                   </div>
                   <div className="px-6 pt-4 pb-2 flex justify-between items-center">
                     <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">

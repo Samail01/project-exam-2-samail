@@ -19,10 +19,17 @@ const Register = () => {
 
   const onSubmit = async (data) => {
     try {
-      await registerUser(data);
-      navigate("/login"); // Navigate to login after successful registration
+      const userData = {
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        avatar: data.avatar,
+        venueManager: data.venueManager,
+      };
+      await registerUser(userData);
+      navigate("/login");
     } catch (error) {
-      setRegistrationError(error.message); // Set error message from API response
+      setRegistrationError(error.message);
     }
   };
 

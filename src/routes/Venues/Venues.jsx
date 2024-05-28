@@ -1,14 +1,24 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFetchVenues } from "../../hook/useFetch";
+import CreateVenue from "../../components/CreateVenue/CreateVenue";
 import defaultImage from "../../assets/default-venue.jpg";
 
-export function Venues() {
+function Venues() {
   const navigate = useNavigate();
   const { data: venues, loading, error } = useFetchVenues();
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   const handleVenueClick = (id) => {
     navigate(`/specific/${id}`);
   };
+
+  const toggleCreateModal = () => {
+    console.log("Toggling Create Modal");
+    setShowCreateModal((prev) => !prev);
+  };
+
+  console.log("Modal should be:", showCreateModal);
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -17,6 +27,12 @@ export function Venues() {
           <h2 className="text-2xl font-bold text-center mb-6">
             All Destinations
           </h2>
+          <button
+            onClick={toggleCreateModal}
+            className="mb-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Create New Venue
+          </button>
           {loading && <div className="text-center">Loading...</div>}
           {error && (
             <div className="text-center text-red-500">
@@ -39,7 +55,10 @@ export function Venues() {
                     }
                   />
                   <div className="px-6 py-4">
-                    <div className="font-bold text-xl mb-2">{venue.name}</div>
+                    <div className="font-bold text-xl mb-1">{venue.name}</div>
+                    <p className="text-gray-700 text-base">
+                      {venue.location.city}, {venue.location.country}
+                    </p>
                   </div>
                   <div className="px-6 pt-4 pb-2 flex justify-between items-center">
                     <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
@@ -64,6 +83,7 @@ export function Venues() {
               ))}
             </div>
           )}
+          {showCreateModal && <CreateVenue onClose={toggleCreateModal} />}
         </div>
       </div>
     </div>

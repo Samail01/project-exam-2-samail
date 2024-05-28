@@ -23,8 +23,8 @@ const Login = () => {
   const onSubmit = async (data) => {
     setLoading(true);
     try {
-      const token = await loginUser(data.email, data.password);
-      login(token);
+      await loginUser(data.email, data.password);
+      login(data.email, data.password);
       navigate("/");
     } catch (error) {
       setLoginError(error.message);

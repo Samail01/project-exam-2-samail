@@ -5,6 +5,11 @@ const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);
 
+const API_URL = "https://v2.api.noroff.dev";
+const LOGIN_URL = `${API_URL}/auth/login`;
+const PROFILE_URL = (userName) => `${API_URL}/holidaze/profiles/${userName}`;
+const API_KEY = "bd4873af-e59d-48b6-996a-63a300dadda8"; // Hardcoded API key
+
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -12,7 +17,6 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     const userName = localStorage.getItem("userName");
-    console.log(`Loaded from storage - Token: ${token}, UserName: ${userName}`);
     if (token && userName) {
       setIsAuthenticated(true);
       fetchUserProfile(userName);
@@ -21,21 +25,25 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await axios.post("/auth/login", { email, password });
-      const responseData = await response.data;
+      const response = await axios.post(
+        LOGIN_URL,
+        { email, password },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "X-Noroff-API-Key": API_KEY,
+          },
+        }
+      );
+      const { accessToken, name } = response.data.data;
 
-      if (responseData.errors) {
-        throw new Error(responseData.errors[0].message || "Login failed");
-      }
-
-      if (responseData.data.accessToken && responseData.data.name) {
-        localStorage.setItem("token", responseData.data.accessToken);
-        localStorage.setItem("userName", responseData.data.name);
+      if (accessToken && name) {
+        localStorage.setItem("token", accessToken);
+        localStorage.setItem("userName", name);
         setIsAuthenticated(true);
-        await fetchUserProfile(responseData.data.name);
-        console.log("Login successful");
+        fetchUserProfile(name);
       } else {
-        console.error(
+        throw new Error(
           "Missing access token or user name in the login response"
         );
       }
@@ -57,25 +65,18 @@ export const AuthProvider = ({ children }) => {
 
   const fetchUserProfile = async (userName) => {
     const token = localStorage.getItem("token");
-    const apiKey = localStorage.getItem("API_KEY");
-
-    console.log("Using token: ", token);
-    console.log("Using API Key: ", apiKey);
-
-    const headers = {
-      Authorization: `Bearer ${token}`,
-      "X-Noroff-API-Key": apiKey,
-    };
-
-    console.log("Headers being sent: ", headers);
 
     try {
-      const response = await axios.get(`/holidaze/profiles/${userName}`, {
-        headers,
+      const response = await axios.get(PROFILE_URL(userName), {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "X-Noroff-API-Key": API_KEY,
+        },
       });
       setCurrentUser(response.data.data);
     } catch (error) {
       console.error("Failed to fetch user profile", error);
+      setCurrentUser(null);
     }
   };
 
@@ -87,3 +88,5 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+
+export { AuthContext };
