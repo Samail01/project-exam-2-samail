@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import { useFetchVenues } from "../../hook/useFetch";
 import CreateVenue from "../../components/CreateVenue/CreateVenue";
 import defaultImage from "../../assets/default-venue.jpg";
 
 function Venues() {
+  const { currentUser } = useAuth();
   const navigate = useNavigate();
   const { data: venues, loading, error } = useFetchVenues();
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -27,12 +29,14 @@ function Venues() {
           <h2 className="text-2xl font-bold text-center mb-6">
             All Destinations
           </h2>
-          <button
-            onClick={toggleCreateModal}
-            className="mb-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          >
-            Create New Venue
-          </button>
+          {currentUser && (
+            <button
+              onClick={toggleCreateModal}
+              className="mb-4 bg-primary  text-white font-bold py-2 px-4 rounded"
+            >
+              Create New Venue
+            </button>
+          )}
           {loading && <div className="text-center">Loading...</div>}
           {error && (
             <div className="text-center text-red-500">

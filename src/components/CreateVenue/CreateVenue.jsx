@@ -76,7 +76,7 @@ function CreateVenue({ onClose }) {
               }
               onChange={handleInputChange}
               placeholder={field.placeholder}
-              className="block w-full p-2 border border-gray-300 rounded shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="block w-full p-2 border border-gray-300 rounded shadow-sm"
             />
           ))}
           <div className="flex justify-between space-x-4">
@@ -90,7 +90,7 @@ function CreateVenue({ onClose }) {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded"
+              className="flex-1 bg-primary  text-black font-bold py-2 px-4 rounded "
             >
               Close
             </button>

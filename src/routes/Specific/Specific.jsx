@@ -4,6 +4,7 @@ import "react-day-picker/dist/style.css";
 import { useParams } from "react-router-dom";
 import { fetchVenueDetails } from "../../components/ApiService/ApiService";
 import useBooking from "../../hook/useBooking";
+import axios from "axios";
 
 const Specific = () => {
   const { id } = useParams();
@@ -15,12 +16,40 @@ const Specific = () => {
     to: undefined,
   });
   const { bookVenue, bookingMessage, isBookingSuccess } = useBooking();
+  const [disabledDays, setDisabledDays] = useState([]);
 
   useEffect(() => {
     const loadVenue = async () => {
       try {
         const data = await fetchVenueDetails(id);
         setVenue(data);
+
+        try {
+          const bookingsResponse = await axios.get(
+            `https://v2.api.noroff.dev/holidaze/profiles/${id}/venues`,
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "X-Noroff-API-Key": "bd4873af-e59d-48b6-996a-63a300dadda8",
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          const bookings = bookingsResponse.data.data;
+          const disabledDates = bookings.map((booking) => ({
+            from: new Date(booking.dateFrom),
+            to: new Date(booking.dateTo),
+          }));
+
+          setDisabledDays(disabledDates);
+        } catch (bookingsError) {
+          if (bookingsError.response && bookingsError.response.status === 404) {
+            console.warn("No bookings found for this venue.");
+          } else {
+            throw bookingsError;
+          }
+        }
       } catch (error) {
         setError(error.message);
       } finally {
@@ -38,11 +67,6 @@ const Specific = () => {
     }
     bookVenue(selectedRange.from, selectedRange.to, id);
   };
-
-  const disabledDays = venue?.bookings?.map((booking) => ({
-    from: new Date(booking.dateFrom),
-    to: new Date(booking.dateTo),
-  }));
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
