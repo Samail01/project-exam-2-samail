@@ -11,6 +11,10 @@ Holidaze is a modern accommodation booking application developed with React and 
 - React.js
 - Tailwind css
 
+## Live Link
+
+https://endearing-biscochitos-fdbe12.netlify.app
+
 
 ## Getting started
 
